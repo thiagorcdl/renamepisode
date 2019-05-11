@@ -1,10 +1,12 @@
 #!/bin/env python
 
 """
-Simple script for renaming your TV show files into a standard form.
+Simple script for renaming TV show files into a standard format.
 
-For now, it's able to match only the following formats:
-   
+Here, we use Kodi's suggestion for describing the season and episode.
+For example, for season 2, episode 7, the video file should contain "S02E07".
+
+This script is currently able to match and fix the following formats:
    * 207
    * 0207
    * 2.07
@@ -12,9 +14,12 @@ For now, it's able to match only the following formats:
    * s02e07
    * s2e7
 
+Please be careful when passing movie files, as the year may be incorrectly
+interpreted. "Movie.2010.DVDRip.avi" could become "Movie.S20E10.DVDRip.avi".
+
 Optional arguments:
 
-:arg 0: path where the script should run
+:arg 0: path where the script should run (defaults to current dir)
 :arg 1: -p|--preview - does not rename, just prints the expected outcome
 :arg 2: -f|--force - does not ask for confirmation (potentially destructive)
 :arg 3: -t|--title - capitalize the first letter of each segment
@@ -162,7 +167,7 @@ def rename(filename, extension, preview, force, title, lower, upper):
     return newname
 
 
-def main(args):
+def main():
     """Gather options and traverse files in path."""
     options = validate_options()
     path = options.pop('path')
@@ -174,4 +179,4 @@ def main(args):
 
 
 if __name__ == '__main__':
-    main(sys.argv[1:])
+    main()
