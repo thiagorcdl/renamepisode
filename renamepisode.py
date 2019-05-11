@@ -22,10 +22,10 @@ Optional arguments:
 :arg 5: -u|--upper|--uppercase - capitalize whole filename
 """
 
-import re
-import os
-import sys
 import argparse
+import os
+import re
+import sys
 from itertools import combinations
 
 OPTIONS = (
