@@ -92,7 +92,7 @@ EXTENSIONS = (
 )
 
 
-def validate_options(args):
+def validate_options():
     """Parse arguments and check for inconsistencies."""
     mutexes = (
         ('force', 'preview'),
@@ -113,7 +113,7 @@ def validate_options(args):
 
 def get_extension(filename):
     """Match video formats and return file extension, if valid."""
-    regex = r'.+(\.{})$'.format("|".join(EXTENSIONS))
+    regex = r'^.+\.({})$'.format("|".join(EXTENSIONS))
     match = re.match(regex, filename)
     return match and match.group(1)
 
@@ -121,7 +121,7 @@ def get_extension(filename):
 def rename(filename, extension, preview, force, title, lower, upper):
     """Match expected regex and changes filename upon confirmation."""
     newname = filename.replace(extension, '')
-    regex = r'^(.*)\bs?(?<!\b(h|x)\.)(\d+).?([^\d]\d|\d\d)\b(.*)\.(.*)$'
+    regex = r'^(.*)\bs?(?<!\b(h|x)\.)(\d+).?([^\d]\d|\d\d)\b(.*\.)(.*)$'
     match = re.match(regex, filename)
 
     if match:
@@ -138,10 +138,11 @@ def rename(filename, extension, preview, force, title, lower, upper):
     elif upper:
         newname = newname.upper()
 
-    if filename == f'{newname}{extension}':
+    newname = f'{newname}{extension}'
+    if filename == newname:
         return
 
-    print(f'{filename} --> {newname}{extension}')
+    print(f'{filename} --> {newname}')
 
     if preview:
         # Nothing more to be done for preview
@@ -157,13 +158,13 @@ def rename(filename, extension, preview, force, title, lower, upper):
         if ANSWERS.get(answer) is False:
             return
 
-    os.rename(filename, f'{newname}{extension}')
+    os.rename(filename, newname)
     return newname
 
 
 def main(args):
     """Gather options and traverse files in path."""
-    options = validate_options(args)
+    options = validate_options()
     path = options.pop('path')
     os.chdir(path)
     for filename in os.listdir():
