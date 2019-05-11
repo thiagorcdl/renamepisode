@@ -60,14 +60,14 @@ OPTIONS = (
         }
     },
     {
-        'key': ['-l', '--lower'],
+        'key': ['-l', '--lower', '--lowercase'],
         'kwargs': {
             'action': 'store_true',
             'help': 'uncapitalize whole filename',
         }
     },
     {
-        'key': ['-u', '--upper'],
+        'key': ['-u', '--upper', '--uppercase'],
         'kwargs': {
             'action': 'store_true',
             'help': 'capitalize whole filename',
@@ -77,7 +77,9 @@ OPTIONS = (
 
 ANSWERS = {
     'y': True,
+    'yes': True,
     'n': False,
+    'no': False,
 }
 
 EXTENSIONS = (
@@ -93,8 +95,8 @@ EXTENSIONS = (
 def validate_options(args):
     """Parse arguments and check for inconsistencies."""
     mutexes = (
-        ('force',  'preview'),
-        ('title',  'lower',  'upper'),
+        ('force', 'preview'),
+        ('title', 'lower', 'upper'),
     )
     parser = argparse.ArgumentParser(
         description='Rename your TV show files into a standard format.')
@@ -114,6 +116,7 @@ def get_extension(filename):
     regex = r'.+(\.{})$'.format("|".join(EXTENSIONS))
     match = re.match(regex, filename)
     return match and match.group(1)
+
 
 def rename(filename, extension, preview, force, title, lower, upper):
     """Match expected regex and changes filename upon confirmation."""
@@ -148,7 +151,8 @@ def rename(filename, extension, preview, force, title, lower, upper):
         # Ask for confirmation
         answer = ''
         while answer not in ANSWERS:
-            answer = input('Are you sure you want to rename this file? [y/n] ')
+            question = 'Are you sure you want to rename this file? [y/n]\n'
+            answer = input(question).lower()
 
         if ANSWERS.get(answer) is False:
             return
